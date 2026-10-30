@@ -1,0 +1,9 @@
+id,language,condition,kind,truth,expected_len,view_verbatim,view_itn
+d1,en,clean,digits,7304916825,10,seven three zero four nine one six eight two five,7304916825
+d2,en,clean,digits,412907,6,four one two nine zero seven,412907
+d3,en,noisy,digits,7304916825,10,seven three zero four nine one six eight five two,7304916825
+d4,en,noisy,amount,50000,,fifteen thousand,"15,000"
+d5,en,noisy,amount,50000,,fifteen thousand,"50,000"
+d6,kn,clean,amount,250000,,ಎರಡು ಲಕ್ಷ ಐವತ್ತು ಸಾವಿರ,"2,50,000"
+d7,kn,noisy,digits,386154,6,ಮೂರು ಎಂಟು ಆರು ಒಂದು ಐದು,38615
+d8,kn,noisy,amount,25000,,ಇಪ್ಪತ್ತೈದು ಸಾವಿರ,"25,000"

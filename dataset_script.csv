@@ -1,0 +1,73 @@
+id,language,kind,expected_len,truth,read_this,instruction
+en_01,en,digits,10,6043321819,6 0 4 3 3 2 1 8 1 9,Say these 10 digits one by one in English
+en_02,en,digits,10,9001338908,9 0 0 1 3 3 8 9 0 8,Say these 10 digits one by one in English
+en_03,en,digits,10,7863794026,7 8 6 3 7 9 4 0 2 6,Say these 10 digits one by one in English
+en_04,en,digits,10,8423511615,8 4 2 3 5 1 1 6 1 5,Say these 10 digits one by one in English
+en_05,en,digits,10,8940781618,8 9 4 0 7 8 1 6 1 8,Say these 10 digits one by one in English
+en_06,en,digits,10,8959310341,8 9 5 9 3 1 0 3 4 1,Say these 10 digits one by one in English
+en_07,en,digits,6,316475,3 1 6 4 7 5,Say these 6 digits one by one in English
+en_08,en,digits,6,255341,2 5 5 3 4 1,Say these 6 digits one by one in English
+en_09,en,digits,6,928327,9 2 8 3 2 7,Say these 6 digits one by one in English
+en_10,en,digits,6,648350,6 4 8 3 5 0,Say these 6 digits one by one in English
+en_11,en,amount,,13000,"Rs. 13,000","Say this amount in English, the way you normally would"
+en_12,en,amount,,30000,"Rs. 30,000","Say this amount in English, the way you normally would"
+en_13,en,amount,,14000,"Rs. 14,000","Say this amount in English, the way you normally would"
+en_14,en,amount,,40000,"Rs. 40,000","Say this amount in English, the way you normally would"
+en_15,en,amount,,15000,"Rs. 15,000","Say this amount in English, the way you normally would"
+en_16,en,amount,,50000,"Rs. 50,000","Say this amount in English, the way you normally would"
+en_17,en,amount,,16000,"Rs. 16,000","Say this amount in English, the way you normally would"
+en_18,en,amount,,60000,"Rs. 60,000","Say this amount in English, the way you normally would"
+en_19,en,amount,,17000,"Rs. 17,000","Say this amount in English, the way you normally would"
+en_20,en,amount,,70000,"Rs. 70,000","Say this amount in English, the way you normally would"
+en_21,en,amount,,18000,"Rs. 18,000","Say this amount in English, the way you normally would"
+en_22,en,amount,,80000,"Rs. 80,000","Say this amount in English, the way you normally would"
+en_23,en,amount,,19000,"Rs. 19,000","Say this amount in English, the way you normally would"
+en_24,en,amount,,90000,"Rs. 90,000","Say this amount in English, the way you normally would"
+kn_01,kn,digits,10,7056413953,7 0 5 6 4 1 3 9 5 3,Say these 10 digits one by one in Kannada
+kn_02,kn,digits,10,9672423884,9 6 7 2 4 2 3 8 8 4,Say these 10 digits one by one in Kannada
+kn_03,kn,digits,10,9965328710,9 9 6 5 3 2 8 7 1 0,Say these 10 digits one by one in Kannada
+kn_04,kn,digits,10,6226916697,6 2 2 6 9 1 6 6 9 7,Say these 10 digits one by one in Kannada
+kn_05,kn,digits,10,8801845146,8 8 0 1 8 4 5 1 4 6,Say these 10 digits one by one in Kannada
+kn_06,kn,digits,10,7704828148,7 7 0 4 8 2 8 1 4 8,Say these 10 digits one by one in Kannada
+kn_07,kn,digits,6,932528,9 3 2 5 2 8,Say these 6 digits one by one in Kannada
+kn_08,kn,digits,6,809570,8 0 9 5 7 0,Say these 6 digits one by one in Kannada
+kn_09,kn,digits,6,154303,1 5 4 3 0 3,Say these 6 digits one by one in Kannada
+kn_10,kn,digits,6,911718,9 1 1 7 1 8,Say these 6 digits one by one in Kannada
+kn_11,kn,amount,,13000,"Rs. 13,000","Say this amount in Kannada, the way you normally would"
+kn_12,kn,amount,,30000,"Rs. 30,000","Say this amount in Kannada, the way you normally would"
+kn_13,kn,amount,,14000,"Rs. 14,000","Say this amount in Kannada, the way you normally would"
+kn_14,kn,amount,,40000,"Rs. 40,000","Say this amount in Kannada, the way you normally would"
+kn_15,kn,amount,,15000,"Rs. 15,000","Say this amount in Kannada, the way you normally would"
+kn_16,kn,amount,,50000,"Rs. 50,000","Say this amount in Kannada, the way you normally would"
+kn_17,kn,amount,,16000,"Rs. 16,000","Say this amount in Kannada, the way you normally would"
+kn_18,kn,amount,,60000,"Rs. 60,000","Say this amount in Kannada, the way you normally would"
+kn_19,kn,amount,,17000,"Rs. 17,000","Say this amount in Kannada, the way you normally would"
+kn_20,kn,amount,,70000,"Rs. 70,000","Say this amount in Kannada, the way you normally would"
+kn_21,kn,amount,,18000,"Rs. 18,000","Say this amount in Kannada, the way you normally would"
+kn_22,kn,amount,,80000,"Rs. 80,000","Say this amount in Kannada, the way you normally would"
+kn_23,kn,amount,,19000,"Rs. 19,000","Say this amount in Kannada, the way you normally would"
+kn_24,kn,amount,,90000,"Rs. 90,000","Say this amount in Kannada, the way you normally would"
+hi_01,hi,digits,10,7278248963,7 2 7 8 2 4 8 9 6 3,Say these 10 digits one by one in Hindi
+hi_02,hi,digits,10,7465787133,7 4 6 5 7 8 7 1 3 3,Say these 10 digits one by one in Hindi
+hi_03,hi,digits,10,6509839301,6 5 0 9 8 3 9 3 0 1,Say these 10 digits one by one in Hindi
+hi_04,hi,digits,10,6310518347,6 3 1 0 5 1 8 3 4 7,Say these 10 digits one by one in Hindi
+hi_05,hi,digits,10,7829973763,7 8 2 9 9 7 3 7 6 3,Say these 10 digits one by one in Hindi
+hi_06,hi,digits,10,6165667010,6 1 6 5 6 6 7 0 1 0,Say these 10 digits one by one in Hindi
+hi_07,hi,digits,6,651333,6 5 1 3 3 3,Say these 6 digits one by one in Hindi
+hi_08,hi,digits,6,872624,8 7 2 6 2 4,Say these 6 digits one by one in Hindi
+hi_09,hi,digits,6,731781,7 3 1 7 8 1,Say these 6 digits one by one in Hindi
+hi_10,hi,digits,6,080132,0 8 0 1 3 2,Say these 6 digits one by one in Hindi
+hi_11,hi,amount,,13000,"Rs. 13,000","Say this amount in Hindi, the way you normally would"
+hi_12,hi,amount,,30000,"Rs. 30,000","Say this amount in Hindi, the way you normally would"
+hi_13,hi,amount,,14000,"Rs. 14,000","Say this amount in Hindi, the way you normally would"
+hi_14,hi,amount,,40000,"Rs. 40,000","Say this amount in Hindi, the way you normally would"
+hi_15,hi,amount,,15000,"Rs. 15,000","Say this amount in Hindi, the way you normally would"
+hi_16,hi,amount,,50000,"Rs. 50,000","Say this amount in Hindi, the way you normally would"
+hi_17,hi,amount,,16000,"Rs. 16,000","Say this amount in Hindi, the way you normally would"
+hi_18,hi,amount,,60000,"Rs. 60,000","Say this amount in Hindi, the way you normally would"
+hi_19,hi,amount,,17000,"Rs. 17,000","Say this amount in Hindi, the way you normally would"
+hi_20,hi,amount,,70000,"Rs. 70,000","Say this amount in Hindi, the way you normally would"
+hi_21,hi,amount,,18000,"Rs. 18,000","Say this amount in Hindi, the way you normally would"
+hi_22,hi,amount,,80000,"Rs. 80,000","Say this amount in Hindi, the way you normally would"
+hi_23,hi,amount,,19000,"Rs. 19,000","Say this amount in Hindi, the way you normally would"
+hi_24,hi,amount,,90000,"Rs. 90,000","Say this amount in Hindi, the way you normally would"
