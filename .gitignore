@@ -3,6 +3,7 @@
 raw_audio/
 audio*/
 results/
+tts_cache/
 __pycache__/
 transcripts.csv
 truth.csv
