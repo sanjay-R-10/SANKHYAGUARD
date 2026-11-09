@@ -94,7 +94,7 @@ Run the premium interface's focused offline checks with:
 
 The saved clean pilot has 8 rows, of which 7 have complete paired Prisma outputs. It is not the full 72-clip experiment. Full clean and phone result files and results for phone/SNR conditions are not available in the current project state. Pilot counts are small and should not be treated as statistically significant or as a broad performance claim. The written labels have not been independently re-verified against every recording.
 
-Local audio folders (`audio/`, `audio_phone/`, `audio_snr5/`, `audio_snr10/`, and `raw_audio/`), `.env`, the virtual environment, live logs, and TTS cache are ignored by Git. Keep the repository private if you later choose to publish source code containing project details, and invite only people you intend to grant access.
+Local audio folders (`audio/`, `audio_phone/`, `audio_snr5/`, `audio_snr10/`, and `raw_audio/`), `.env`, the virtual environment, live logs, and TTS cache are ignored by Git. This repository is public, so do not commit credentials, private recordings, or personal data; anyone can view and fork the code, and GitHub Actions history and logs are public.
 
 ## Current development state
 
