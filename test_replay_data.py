@@ -64,6 +64,19 @@ class ReplayDataTests(unittest.TestCase):
             self.assertEqual([row["id"] for row in rows], ["en_01"])
             self.assertEqual(warnings, [])
 
+    def test_none_demo_id_path_returns_all_complete_pilot_rows(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            results = root / "pilot.csv"
+            dataset = root / "dataset.csv"
+            write_rows(results, [make_row("en_01"), make_row("kn_02")])
+            dataset.write_text("id\nen_01\nkn_02\n", encoding="utf-8")
+            rows, warnings = load_replay_rows(
+                results_path=results, demo_ids_path=None, dataset_path=dataset
+            )
+            self.assertEqual([row["id"] for row in rows], ["en_01", "kn_02"])
+            self.assertEqual(warnings, [])
+
     def test_excludes_incomplete_pairs(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

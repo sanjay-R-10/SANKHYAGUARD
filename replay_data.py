@@ -75,7 +75,8 @@ def load_replay_rows(
     dataset_path=DATASET,
 ):
     results_path = Path(results_path)
-    demo_ids_path = Path(demo_ids_path)
+    if demo_ids_path is not None:
+        demo_ids_path = Path(demo_ids_path)
     dataset_path = Path(dataset_path)
     warnings = []
     if not results_path.is_file():
@@ -155,7 +156,11 @@ def load_replay_rows(
             f"Excluded {skipped} incomplete or invalid row(s); replay requires a complete model pair."
         )
 
-    selection = _read_demo_ids(demo_ids_path, warnings)
+    selection = (
+        _read_demo_ids(demo_ids_path, warnings)
+        if demo_ids_path is not None
+        else None
+    )
     if selection is None:
         return complete, warnings
 

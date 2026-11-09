@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SankhyaGuard</title>
+<style>
+:root{--acc:96,140,255;--text:#f1f4ff;--muted:#8e98bd;--line:rgba(255,255,255,.10);--mint:#5dffb8;--amber:#ffc766;--rose:#ff7a8a;--cyan:#3ee6ff;
+--sans:"Inter",system-ui,"Segoe UI","Noto Sans Kannada","Noto Sans Devanagari",sans-serif;--disp:"Sora","Inter",system-ui,"Noto Sans Kannada","Noto Sans Devanagari",sans-serif;--mono:"JetBrains Mono",ui-monospace,Consolas,monospace}
+*{box-sizing:border-box}html,body{margin:0}
+body{min-height:100vh;color:var(--text);font-family:var(--sans);background:#05060f;-webkit-font-smoothing:antialiased}
+.bg{position:fixed;inset:0;overflow:hidden;z-index:-2}
+.bg i{position:absolute;border-radius:50%;filter:blur(90px);mix-blend-mode:screen;animation:drift 24s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:62vw;height:62vw;left:-16vw;top:-28vw;background:rgba(var(--acc),.45)}
+.bg i:nth-child(2){width:48vw;height:48vw;right:-12vw;top:4vh;background:rgba(124,92,255,.42);animation-duration:30s}
+.bg i:nth-child(3){width:46vw;height:46vw;left:22vw;bottom:-30vw;background:rgba(0,190,255,.18);animation-duration:36s}
+@keyframes drift{to{transform:translate3d(6vw,4vh,0) scale(1.14)}}
+.grain{position:fixed;inset:0;z-index:-1;opacity:.07;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;max-width:1240px;margin:0 auto;padding:22px 28px 6px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#3ee6ff,#7c5cff);box-shadow:0 10px 34px rgba(76,120,255,.45),inset 0 1px 0 rgba(255,255,255,.5)}
+.brand h1{font:700 19px var(--disp);letter-spacing:-.3px;margin:0}
+.brand p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.seg{display:flex;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:4px}
+.seg button{border:0;background:transparent;color:var(--muted);padding:8px 18px;border-radius:999px;font:500 13px var(--sans);cursor:pointer;transition:.25s}
+.seg button.on{background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08));color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.pill{font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line);padding:9px 14px;border-radius:999px}
+.pill b{color:var(--text);font-family:var(--mono)}
+.wrap{max-width:1240px;margin:0 auto;padding:10px 28px 40px;display:grid;grid-template-columns:minmax(360px,470px) 1fr;gap:30px;align-items:start}
+@media(max-width:940px){.wrap{grid-template-columns:1fr}.stage{position:relative;top:auto}}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.03));border:1px solid var(--line);border-radius:28px;backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);box-shadow:0 34px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.13)}
+.stage{padding:6px 8px 16px;text-align:center;position:sticky;top:14px}
+#orbBox{display:flex;justify-content:center;margin:-6px 0 -6px;width:100%;min-width:0;max-width:100%;overflow:hidden}
+canvas{display:block;max-width:100%}
+#status{font:600 31px var(--disp);letter-spacing:-.8px;margin:0 0 6px;min-height:40px}
+#sub{font-size:14.5px;color:var(--muted);min-height:22px;margin:0 auto 18px;max-width:380px;line-height:1.5}
+.pills{display:inline-flex;gap:2px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:4px;margin:5px 4px}
+.pills button{border:0;background:transparent;color:var(--muted);padding:8px 15px;border-radius:999px;font:500 13px var(--sans);cursor:pointer;transition:.25s}
+.pills button.on{color:#fff;background:linear-gradient(180deg,rgba(var(--acc),.45),rgba(var(--acc),.18));box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 0 22px rgba(var(--acc),.3)}
+#micWrap{margin:20px 0 8px;display:flex;justify-content:center}
+#mic{width:96px;height:96px;border-radius:50%;border:0;cursor:pointer;color:#04101c;display:grid;place-items:center;position:relative;
+background:linear-gradient(135deg,#7ff3ff,#5aa9ff 55%,#8b7bff);box-shadow:0 16px 50px rgba(var(--acc),.55),inset 0 2px 0 rgba(255,255,255,.6);transition:transform .2s}
+#mic:hover{transform:scale(1.06)}#mic:active{transform:scale(.97)}
+#mic.rec{background:linear-gradient(135deg,#ff9ab0,#ff4d7d);color:#fff;animation:ping 1.5s infinite}
+#mic:disabled{opacity:.4;cursor:not-allowed}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(255,77,125,.6),0 16px 50px rgba(255,77,125,.5)}100%{box-shadow:0 0 0 30px rgba(255,77,125,0),0 16px 50px rgba(255,77,125,.5)}}
+.hint{font-size:13px;color:var(--muted);margin-top:8px;min-height:18px}
+.consent{display:flex;align-items:flex-start;gap:10px;margin:12px auto 8px;padding:12px 14px;max-width:400px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.045);color:var(--muted);font-size:12px;line-height:1.55;text-align:left}
+.consent input{accent-color:#7c8fff;width:17px;height:17px;flex:none;margin:1px 0 0}
+.demoMeta{font-size:13px;color:var(--muted);margin:10px 0}
+.demoColumns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+.demoColumn{min-width:0;max-height:245px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:rgba(5,9,22,.55);padding:6px}
+.demoColumn h4{position:sticky;top:-6px;background:#10152a;margin:0 0 5px;padding:7px 2px;color:#dfe6ff;font:600 11px var(--sans);z-index:1}
+.demoAudio{display:block;width:100%;margin:3px 0;padding:7px 3px;border:1px solid transparent;border-radius:8px;background:rgba(255,255,255,.035);color:var(--muted);font:500 11px var(--mono);cursor:pointer}
+.demoAudio:hover,.demoAudio.active{border-color:rgba(62,230,255,.5);color:#fff;background:rgba(62,230,255,.12)}
+#demoPreview{width:100%;margin:12px 0;border-radius:12px}
+input[type=text]{width:100%;background:#0b1022;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:500 15px var(--sans)}
+select{background:#0b1022;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:500 14px var(--sans);width:100%}
+.btn{border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;border-radius:14px;padding:11px 18px;font:500 14px var(--sans);cursor:pointer;transition:.25s}
+.btn:hover{background:rgba(255,255,255,.15);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,#3ee6ff,#7c5cff);border:0;font-weight:600;box-shadow:0 10px 30px rgba(94,110,255,.45)}
+.panel{padding:26px}
+.empty{color:var(--muted);line-height:1.75;font-size:15.5px}
+.empty h2{font:600 26px var(--disp);letter-spacing:-.6px;color:var(--text);margin:0 0 10px}
+.empty b{color:#dfe6ff}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.step{flex:1;min-width:112px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:9px 13px;opacity:.3;transform:translateY(6px);transition:.5s}
+.step.in{opacity:1;transform:none;color:#d8fff0;border-color:rgba(93,255,184,.4);background:rgba(93,255,184,.08)}
+.step i{font-style:normal;color:var(--mint);margin-right:7px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:16px}
+.card{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-radius:20px;padding:16px 18px;opacity:0;transform:translateY(12px);transition:.55s cubic-bezier(.2,.8,.2,1);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.card.in{opacity:1;transform:none}
+.card .lab{font:500 11px var(--sans);letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.card .raw{font-size:13px;color:#aeb8dc;margin-bottom:11px;word-break:break-word;min-height:18px}
+.dg{display:inline-block;min-width:1.5em;margin:2px 3px 2px 0;padding:.3em .08em;text-align:center;border-radius:9px;
+background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.1);font:700 1.05em var(--mono);animation:pop .5s calc(var(--i)*40ms) both cubic-bezier(.2,.9,.3,1.3)}
+.dgs{display:flex;gap:3px}.dgs .dg{flex:1 1 0;min-width:0;max-width:1.7em;margin:0;padding:.34em 0}
+.big .dgs{justify-content:center;flex-wrap:wrap}.big .dgs .dg{flex:0 0 auto;min-width:1.25em;max-width:none}
+.grid3 .dg{font-size:.78em;border-radius:7px}
+.dg.bad{color:#ffd3da;background:linear-gradient(180deg,rgba(255,122,138,.4),rgba(255,122,138,.14));border-color:rgba(255,122,138,.7);box-shadow:0 0 20px rgba(255,122,138,.45)}
+.big .dg{font-size:2em;min-width:1.3em;color:#eafff5;background:linear-gradient(180deg,rgba(93,255,184,.28),rgba(93,255,184,.07));border-color:rgba(93,255,184,.5);box-shadow:0 0 26px rgba(93,255,184,.28)}
+.amt{font:700 1.65em var(--disp);letter-spacing:-.5px}
+.na{color:var(--muted);font-style:italic;font-size:14px}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.6)}to{opacity:1;transform:none}}
+.verdict{display:grid;grid-template-columns:1fr 1.15fr;gap:14px;margin-bottom:16px}
+@media(max-width:700px){.verdict{grid-template-columns:1fr}}
+.card.ok{border-color:rgba(93,255,184,.55);background:linear-gradient(180deg,rgba(93,255,184,.14),rgba(93,255,184,.03))}
+.card.ask{border-color:rgba(255,160,90,.6);background:linear-gradient(180deg,rgba(255,150,80,.16),rgba(255,150,80,.03))}
+.card h3{margin:0 0 6px;font:600 19px var(--disp);letter-spacing:-.3px}
+.card ul{margin:7px 0 0;padding-left:18px;color:#dde3f7;font-size:13.5px;line-height:1.6}
+.gz{display:flex;align-items:center;gap:16px}
+.gz svg{flex:none}
+.cands{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:12px 0}
+.cand{border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border-radius:20px;padding:16px;cursor:pointer;text-align:left;color:inherit;font:inherit;transition:.25s}
+.cand:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 16px 40px rgba(62,230,255,.18)}
+.cand .n{font-size:12px;color:var(--muted);margin-bottom:9px;letter-spacing:.4px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.ql{margin:16px 0 4px;color:var(--muted);font:500 11.5px var(--sans);letter-spacing:1.4px;text-transform:uppercase}
+.final{text-align:center;padding:30px 16px;border:1px solid rgba(93,255,184,.55);background:radial-gradient(120% 140% at 50% 0%,rgba(93,255,184,.18),rgba(93,255,184,.02));border-radius:24px;animation:glow 1.8s ease-out}
+@keyframes glow{from{box-shadow:0 0 0 0 rgba(93,255,184,.55)}to{box-shadow:0 0 0 40px rgba(93,255,184,0)}}
+.final .lab{color:#8ff0c8;font:500 12px var(--sans);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.reveal{margin-top:12px;color:var(--muted);font-size:13.5px}
+.note{margin-top:10px;font-size:13px;color:var(--amber)}
+.foot{max-width:1240px;margin:0 auto;padding:0 28px 30px;color:#66709a;font-size:12.5px;line-height:1.6}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:rgba(60,14,30,.92);border:1px solid #ff7a8a;color:#ffd6dc;padding:13px 20px;border-radius:16px;opacity:0;pointer-events:none;transition:.35s;max-width:min(560px,90vw);font-size:14px;z-index:9;backdrop-filter:blur(10px)}
+#toast.show{opacity:1;transform:translateX(-50%)}
+.hide{display:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== intro + orb button ===== */
+#intro{position:fixed;inset:0;z-index:100;background:radial-gradient(120% 90% at 50% 38%,#0c1030 0,#04050c 62%);overflow:hidden;transition:opacity .9s ease,transform .9s ease,filter .9s ease}
+#intro.out{opacity:0;transform:scale(1.07);filter:blur(12px);pointer-events:none}
+#introCv{position:absolute;inset:0;width:100%;height:100%}
+.itxt{position:absolute;left:0;right:0;top:60%;text-align:center;padding:0 20px}
+#iname{margin:0;display:flex;justify-content:center;font:700 clamp(40px,8.2vw,104px) var(--disp);letter-spacing:-.04em;filter:drop-shadow(0 0 26px rgba(120,160,255,.5))}
+#iname span{display:inline-block;opacity:0;transform:translateY(46px) scale(.86);filter:blur(16px);background:linear-gradient(180deg,#fff 10%,#8ff3ff 60%,#a99bff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:letter .95s cubic-bezier(.2,.9,.2,1) forwards;animation-delay:calc(1.75s + var(--k)*60ms)}
+@keyframes letter{to{opacity:1;transform:none;filter:blur(0)}}
+#itag{margin:14px 0 0;font-size:clamp(11px,1.3vw,15px);letter-spacing:.42em;text-transform:uppercase;color:#9aa6d0;opacity:0;animation:tagin 1s 2.9s forwards}
+@keyframes tagin{from{opacity:0;letter-spacing:.7em}to{opacity:1;letter-spacing:.42em}}
+#ichips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+#ichips span{font-size:12.5px;color:#cfd8ff;padding:7px 14px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(255,255,255,.05);opacity:0;transform:translateY(10px);animation:chip .7s forwards}
+#ichips span:nth-child(1){animation-delay:3.2s}#ichips span:nth-child(2){animation-delay:3.35s}#ichips span:nth-child(3){animation-delay:3.5s}
+@keyframes chip{to{opacity:1;transform:none}}
+#ibar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.06)}
+#iprog{display:block;height:100%;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,#3ee6ff,#7c5cff,#ff7ad9)}
+#iskip{position:absolute;right:24px;bottom:22px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#cfd8ff;border-radius:999px;padding:8px 16px;font:500 13px var(--sans);cursor:pointer}
+#iskip:hover{background:rgba(255,255,255,.16)}
+body.enter header{animation:slideDown .9s cubic-bezier(.2,.8,.2,1) both}
+body.enter .stage{animation:fadeUp 1s .15s cubic-bezier(.2,.8,.2,1) both}
+body.enter .panel{animation:fadeUp 1s .3s cubic-bezier(.2,.8,.2,1) both}
+body.enter .foot{animation:fadeUp 1s .5s both}
+@keyframes slideDown{from{opacity:0;transform:translateY(-24px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}}
+#orb:focus-visible{outline:none}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i></div><div class="grain"></div>
+<div id="intro"><canvas id="introCv"></canvas>
+<div class="itxt"><h1 id="iname" aria-label="SankhyaGuard"></h1><p id="itag">Spoken numbers you can trust</p>
+<div id="ichips"><span>Gnani Prisma</span><span>Gnani Timbre</span><span>Kannada · Hindi · English</span></div></div>
+<div id="ibar"><i id="iprog"></i></div><button id="iskip">Skip ›</button></div>
+<header>
+  <div class="brand">
+    <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div>
+    <div><h1>SankhyaGuard</h1><p>Voice number verification · Gnani Prisma</p></div>
+  </div>
+  <div class="right">
+    <div class="seg" id="modeSeg"><button data-mode="live" class="on">Live</button><button data-mode="demo">Demo Audios</button><button data-mode="replay">Replay</button></div>
+    <div class="pill">API calls <b id="meter">0 / 0</b></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="stage">
+    <div id="orbBox"><canvas id="orb"></canvas></div>
+    <div id="status">Ready</div>
+    <div id="sub">Tap the orb and say a number.</div>
+
+    <label class="consent" id="consentBox">
+      <input id="liveConsent" type="checkbox">
+      <span>I understand that processing sends audio to Prisma and may use credits. A check uses up to 2 requests; answering by voice may use 1 more. Audio is not stored by this app.</span>
+    </label>
+
+    <div id="liveControls">
+      <div class="pills" id="langPills">
+        <button data-lang="en" class="on">English</button><button data-lang="kn">ಕನ್ನಡ</button><button data-lang="hi">हिन्दी</button>
+      </div>
+      <div class="pills" id="kindPills">
+        <button data-kind="phone" class="on">Phone · 10 digits</button><button data-kind="pin">PIN · 6 digits</button><button data-kind="amount">Amount</button>
+      </div>
+      <div class="hint" id="hint"></div>
+    </div>
+
+    <div id="demoControls" class="hide">
+      <div class="demoMeta" id="demoMeta">Loading the manifest-listed English, Kannada, and Hindi clips…</div>
+      <div class="demoColumns" id="demoLists"></div>
+      <div class="demoMeta" id="selectedDemoMeta">Select a bundled clip to preview it locally.</div>
+      <audio id="demoPreview" controls class="hide"></audio>
+      <div class="row" style="justify-content:center;margin-top:12px">
+        <button class="btn primary" id="analyzeDemo" disabled>Process selected clip</button>
+      </div>
+      <div class="hint">Previewing and selecting a clip is free. Processing requires the consent checkbox above and makes two Prisma requests.</div>
+    </div>
+
+    <div id="replayControls" class="hide">
+      <select id="caseSel"></select>
+      <div class="row" style="justify-content:center;margin-top:14px"><button class="btn primary" id="playCase">▶ Play this case</button></div>
+      <div class="hint">Replays the saved clean-pilot examples only. Uses no credits; this is not the full experiment.</div>
+    </div>
+  </section>
+
+  <section class="glass panel" id="results">
+    <div class="empty" id="empty">
+      <h2>How it works</h2>
+      Say a phone number, a PIN or an amount. With your explicit credit consent, SankhyaGuard sends your voice to <b>two Gnani speech models</b>,
+      reads the numbers itself with its own Kannada, Hindi and English number parser, and compares them.<br><br>
+      If they agree, it accepts. If they don't, it <b>asks you</b>, by voice, about the part in doubt, and you answer
+      "one" or "two". A normal app would have accepted the first guess silently.
+    </div>
+  </section>
+</main>
+
+<div class="foot">Prototype; model agreement is not proof of correctness and shared errors can pass unnoticed. Only complete saved clean-pilot results are available in Replay.
+Live audio is sent to Gnani for transcription only after consent and an explicit recording or demo-processing action. Audio is held temporarily for processing and is not written to the app's logs.</div>
+<div id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const S = {mode:'live', lang:'en', kind:'phone', state:'idle', level:0, busy:false, stopRec:null, resolved:false, demos:[], selectedDemo:null};
+const KINDS = {phone:{kind:'digits', len:10}, pin:{kind:'digits', len:6}, amount:{kind:'amount', len:0}};
+const HINTS = {
+  en:{phone:'Say the 10 digits one by one.', pin:'Say the 6 digits one by one.', amount:'Say an amount, e.g. "fifteen thousand rupees".'},
+  kn:{phone:'10 ಅಂಕೆಗಳನ್ನು ಒಂದೊಂದಾಗಿ ಹೇಳಿ.', pin:'6 ಅಂಕೆಗಳನ್ನು ಒಂದೊಂದಾಗಿ ಹೇಳಿ.', amount:'ಮೊತ್ತವನ್ನು ಹೇಳಿ, ಉದಾ. "ಹದಿನೈದು ಸಾವಿರ ರೂಪಾಯಿ".'},
+  hi:{phone:'10 अंक एक-एक करके बोलिए।', pin:'6 अंक एक-एक करके बोलिए।', amount:'राशि बोलिए, जैसे "पंद्रह हज़ार रुपये"।'}
+};
+
+/* ---------------------------------------------------------------- the orb */
+const cv = $('#orb'), ctx = cv.getContext('2d');
+const COLORS = {idle:[96,140,255], listening:[34,211,238], thinking:[168,85,247], speaking:[251,191,36], ok:[52,211,153], ask:[251,146,60], error:[248,113,113]};
+let col = [96,140,255], levelS = 0, t0 = performance.now();
+function sizeOrb(){
+  const s = Math.min(440, $('#orbBox').clientWidth || 440), d = window.devicePixelRatio || 1;
+  cv.style.width = s + 'px'; cv.style.height = s + 'px'; cv.width = s * d; cv.height = s * d;
+}
+window.addEventListener('resize', sizeOrb); sizeOrb();
+
+let actx = null, activeAnalyser = null, abuf = new Uint8Array(1024);
+function audioCtx(){
+  if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if(actx.state === 'suspended') actx.resume();
+  return actx;
+}
+function levelOf(an){
+  if(!an) return 0;
+  an.getByteTimeDomainData(abuf);
+  let s = 0; for(let i = 0; i < abuf.length; i++){ const x = (abuf[i] - 128) / 128; s += x * x; }
+  return Math.min(1, Math.sqrt(s / abuf.length) * 3.4);
+}
+const fbuf = new Uint8Array(512);
+function drawGlyph(cx, cy, u, kind, alpha){
+  ctx.save(); ctx.globalCompositeOperation = 'source-over';
+  ctx.strokeStyle = `rgba(255,255,255,${alpha})`; ctx.fillStyle = `rgba(255,255,255,${alpha})`; ctx.lineWidth = 4.5 * u; ctx.lineCap = 'round';
+  if(kind === 'stop'){
+    const s = 24 * u, r = 6 * u, x0 = cx - s / 2, y0 = cy - s / 2, x1 = cx + s / 2, y1 = cy + s / 2;
+    ctx.beginPath(); ctx.moveTo(x0 + r, y0); ctx.arcTo(x1, y0, x1, y1, r); ctx.arcTo(x1, y1, x0, y1, r); ctx.arcTo(x0, y1, x0, y0, r); ctx.arcTo(x0, y0, x1, y0, r); ctx.closePath(); ctx.fill();
+  } else {
+    const w = 18 * u, h = 30 * u, top = cy - 24 * u;
+    ctx.beginPath(); ctx.arc(cx, top + w / 2, w / 2, Math.PI, 0); ctx.lineTo(cx + w / 2, top + h - w / 2); ctx.arc(cx, top + h - w / 2, w / 2, 0, Math.PI); ctx.closePath(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, top + h - 6 * u, 17 * u, 0.1 * Math.PI, 0.9 * Math.PI); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, top + h + 10 * u); ctx.lineTo(cx, top + h + 20 * u); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function draw(now){
+  const t = (now - t0) / 1000, W = cv.width, H = cv.height, cx = W / 2, cy = H / 2, u = W / 460;
+  S.level = levelOf(activeAnalyser);
+  let freq = null; if(activeAnalyser){ activeAnalyser.getByteFrequencyData(fbuf); freq = fbuf; }
+  const target = COLORS[S.state] || COLORS.idle;
+  for(let i = 0; i < 3; i++) col[i] += (target[i] - col[i]) * 0.05;
+  const c = col.map(Math.round).join(',');
+  document.documentElement.style.setProperty('--acc', c);
+  const lv = S.state === 'thinking' ? 0.2 + 0.1 * Math.sin(t * 3.2) : (activeAnalyser ? S.level : (S.state === 'idle' ? 0.03 + 0.02 * Math.sin(t * 1.3) : 0.05));
+  levelS += (lv - levelS) * 0.16;
+  const base = (80 * u + levelS * 30 * u) * (S.hover && S.mode === 'live' ? 1.05 : 1);
+  ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
+  let g = ctx.createRadialGradient(cx, cy, base * 0.3, cx, cy, base * 2.6);
+  g.addColorStop(0, `rgba(${c},0.36)`); g.addColorStop(.5, `rgba(${c},0.08)`); g.addColorStop(1, `rgba(${c},0)`);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // spectrum ring
+  const N = 84, r0 = base * 1.3;
+  ctx.lineCap = 'round'; ctx.lineWidth = 3 * u;
+  for(let i = 0; i < N; i++){
+    const a = i / N * Math.PI * 2 - Math.PI / 2 + t * 0.06;
+    const v = freq ? freq[2 + Math.floor((i < N / 2 ? i : N - i) / (N / 2) * 56)] / 255
+                   : 0.07 + 0.05 * Math.sin(i * 0.55 + t * 1.6) + (S.state === 'thinking' ? 0.1 * Math.abs(Math.sin(i * .4 - t * 4)) : 0);
+    const len = (4 + Math.pow(v, 1.15) * 56) * u;
+    ctx.beginPath(); ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); ctx.lineTo(cx + Math.cos(a) * (r0 + len), cy + Math.sin(a) * (r0 + len));
+    ctx.strokeStyle = `rgba(${c},${0.25 + v * 0.75})`; ctx.stroke();
+  }
+  if(S.state === 'listening' || S.state === 'speaking'){
+    for(let k = 0; k < 3; k++){
+      const pr = ((t * 0.4 + k / 3) % 1);
+      ctx.beginPath(); ctx.arc(cx, cy, base * (1.1 + pr * 0.35), 0, 7);
+      ctx.strokeStyle = `rgba(${c},${(1 - pr) * 0.28})`; ctx.lineWidth = 1.5 * u; ctx.stroke();
+    }
+  }
+  ctx.globalCompositeOperation = 'lighter';
+  const speed = S.state === 'thinking' ? 2.3 : 1;
+  for(let l = 0; l < 3; l++){
+    ctx.beginPath();
+    for(let i = 0; i <= 160; i++){
+      const a = i / 160 * Math.PI * 2;
+      const n = Math.sin(a * 3 + t * 1.1 * speed + l * 1.7) * .5 + Math.sin(a * 5 - t * .9 * speed + l * 2.3) * .3 + Math.sin(a * 2 + t * .6 * speed + l) * .2;
+      const r = base * (1 + (0.045 + levelS * 0.5) * n * (1 - l * 0.18)) + l * 3 * u;
+      i ? ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r) : ctx.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+    }
+    ctx.closePath();
+    const gr = ctx.createRadialGradient(cx - base * .34, cy - base * .4, base * .05, cx, cy, base * 1.3);
+    gr.addColorStop(0, `rgba(255,255,255,${0.38 - l * 0.1})`); gr.addColorStop(.3, `rgba(${c},${0.62 - l * 0.12})`); gr.addColorStop(1, `rgba(${c},0.05)`);
+    ctx.fillStyle = gr; ctx.fill();
+  }
+  // glass highlight
+  ctx.globalCompositeOperation = 'source-over';
+  const hl = ctx.createRadialGradient(cx - base * .38, cy - base * .45, 0, cx - base * .38, cy - base * .45, base * .55);
+  hl.addColorStop(0, 'rgba(255,255,255,0.32)'); hl.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = hl; ctx.beginPath(); ctx.ellipse(cx - base * .38, cy - base * .45, base * .5, base * .3, -0.6, 0, 7); ctx.fill();
+  if(S.mode === 'live'){
+    if(S.recording){ drawGlyph(cx, cy, u, 'stop', 0.9 * (0.75 + 0.25 * Math.sin(t * 6))); }
+    else if(S.state === 'idle' || S.state === 'ok' || S.state === 'error'){ drawGlyph(cx, cy, u, 'mic', 0.45 + 0.2 * Math.sin(t * 2.2)); }
+    if(S.state === 'idle'){ const pr = (t * 0.35) % 1; ctx.beginPath(); ctx.arc(cx, cy, base * (1.0 + pr * 0.5), 0, 7); ctx.strokeStyle = `rgba(${c},${(1 - pr) * 0.3})`; ctx.lineWidth = 2 * u; ctx.stroke(); }
+  }
+  // orbiting particles
+  const spin = S.state === 'thinking' ? 1.6 : (S.state === 'idle' ? 0.12 : 0.35);
+  for(let k = 0; k < 16; k++){
+    const a = t * spin + k * 0.39 + Math.sin(k * 7.1) , rr = base * (1.62 + 0.18 * Math.sin(k * 3.3 + t * 0.7));
+    ctx.beginPath(); ctx.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, (1.4 + (k % 3)) * u, 0, 7);
+    ctx.fillStyle = `rgba(${c},${0.3 + 0.4 * ((k % 4) / 4)})`; ctx.fill();
+  }
+  if(S.state === 'thinking'){
+    for(let k = 0; k < 3; k++){
+      const a0 = t * 2 + k * 2.09;
+      ctx.beginPath(); ctx.arc(cx, cy, base * 1.12, a0, a0 + 0.9);
+      ctx.strokeStyle = `rgba(${c},0.95)`; ctx.lineWidth = 3.5 * u; ctx.stroke();
+    }
+  }
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+function setState(state, status, sub){
+  S.state = state; document.body.dataset.state = state;
+  if(status !== undefined) $('#status').textContent = status;
+  if(sub !== undefined) $('#sub').textContent = sub;
+}
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 6000);
+}
+function setMic(on){ S.recording = !!on; }
+function meter(c, m){ $('#meter').textContent = `${c} / ${m}`; }
+
+/* ---------------------------------------------------------------- recording and playback */
+async function recordOnce({maxMs = 20000, silenceMs = 1500, noSpeechMs = 9000} = {}){
+  const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+  const ac = audioCtx();
+  const src = ac.createMediaStreamSource(stream), an = ac.createAnalyser();
+  an.fftSize = 1024; src.connect(an); activeAnalyser = an;
+  const mime = window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : '';
+  const rec = new MediaRecorder(stream, mime ? {mimeType: mime} : {});
+  const chunks = [];
+  rec.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+  const done = new Promise(res => rec.onstop = () => res(new Blob(chunks, {type: rec.mimeType || 'audio/webm'})));
+  rec.start();
+  const start = performance.now(); let spoke = false, lastLoud = start;
+  S.stopRec = () => { if(rec.state !== 'inactive') rec.stop(); };
+  (function tick(){
+    if(rec.state === 'inactive') return;
+    const now = performance.now();
+    if(S.level > 0.08){ spoke = true; lastLoud = now; }
+    if((spoke && now - lastLoud > silenceMs) || now - start > maxMs || (!spoke && now - start > noSpeechMs)){ rec.stop(); return; }
+    requestAnimationFrame(tick);
+  })();
+  const blob = await done;
+  stream.getTracks().forEach(t => t.stop()); activeAnalyser = null; S.stopRec = null;
+  return blob;
+}
+function playUrl(url){
+  return new Promise((resolve, reject) => {
+    const a = new Audio(url), ac = audioCtx();
+    const src = ac.createMediaElementSource(a), an = ac.createAnalyser();
+    an.fftSize = 1024; src.connect(an); an.connect(ac.destination); activeAnalyser = an;
+    a.onended = () => { activeAnalyser = null; resolve(); };
+    a.onerror = () => { activeAnalyser = null; reject(new Error('The audio could not be played.')); };
+    a.play().catch(e => { activeAnalyser = null; reject(e); });
+  });
+}
+async function api(path, opts){
+  const r = await fetch(path, opts);
+  if(!r.ok){
+    let m = 'Something went wrong.';
+    let data = {};
+    try{ data = await r.json(); m = data.error || m; }catch(e){}
+    if(data.calls !== undefined) meter(data.calls, data.max_calls);
+    throw new Error(m);
+  }
+  return r;
+}
+const postForm = async (path, fd) => (await api(path, {
+  method: 'POST', headers: {'X-SankhyaGuard-Request': '1'}, body: fd
+})).json();
+async function speak(text, lang){
+  if(!('speechSynthesis' in window)) throw new Error('This browser does not support local speech playback.');
+  window.speechSynthesis.cancel();
+  return new Promise((resolve, reject) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = ({en:'en-IN', kn:'kn-IN', hi:'hi-IN'})[lang] || 'en-IN';
+    utterance.rate = 0.9;
+    utterance.onend = resolve;
+    utterance.onerror = () => reject(new Error('Local speech playback was interrupted.'));
+    window.speechSynthesis.speak(utterance);
+  });
+}
+
+/* ---------------------------------------------------------------- rendering */
+const boxes = (s, bad = []) => '<div class="dgs">' + [...s].map((ch, i) => `<span class="dg${bad.includes(i + 1) ? ' bad' : ''}" style="--i:${i}">${ch}</span>`).join('') + '</div>';
+const show = (res, value, pretty, bad) => value == null ? '<span class="na">could not read a number</span>'
+  : (res.kind === 'digits' ? boxes(value, bad) : `<span class="amt">${pretty}</span>`);
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]));
+
+function gauge(res){
+  const vals = res.views.map(v => v.value).filter(v => v != null);
+  const counts = {}; vals.forEach(v => counts[v] = (counts[v] || 0) + 1);
+  const top = Math.max(0, ...Object.values(counts)), total = res.views.length, f = total ? top / total : 0;
+  const colr = f >= 0.999 ? '#5dffb8' : (f >= 0.5 ? '#ffc766' : '#ff7a8a'), C = 2 * Math.PI * 30;
+  return `<svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="30" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="7"/>
+    <circle cx="42" cy="42" r="30" fill="none" stroke="${colr}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 42 42)" style="filter:drop-shadow(0 0 6px ${colr});transition:stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1)"><animate attributeName="stroke-dashoffset" from="${C}" to="${C * (1 - f)}" dur="1.1s" fill="freeze"/></circle>
+    <text x="42" y="47" text-anchor="middle" fill="#fff" font-family="Sora,Inter,sans-serif" font-weight="700" font-size="17">${top}/${total}</text></svg>`;
+}
+const STEPS = ['Recorded', 'Prisma v2.5', 'Prisma v3.0', 'Own number parser', 'Guard decision'];
+
+async function showResult(res, {replay = false} = {}){
+  const box = $('#results');
+  const hasV30 = res.views.some(v => v.name === 'v3.0');
+  box.innerHTML = `<div class="steps">${STEPS.map((s, i) => `<div class="step" id="st${i}"><i>✓</i>${s}</div>`).join('')}</div>
+    <div class="grid3" id="views"></div><div class="verdict" id="verdict"></div><div id="action"></div>`;
+  const stepEls = [...box.querySelectorAll('.step')];
+  for(let i = 0; i < stepEls.length; i++){ if(i === 2 && !hasV30) continue; stepEls[i].classList.add('in'); await sleep(220); }
+  const grid = $('#views');
+  for(const v of res.views){
+    const el = document.createElement('div'); el.className = 'card';
+    el.innerHTML = `<div class="lab">${esc(v.name)}</div><div class="raw">${esc(v.text)}</div>${show(res, v.value, v.pretty, res.positions)}`;
+    grid.appendChild(el); await sleep(60); el.classList.add('in'); await sleep(260);
+  }
+  const vd = $('#verdict');
+  const normal = document.createElement('div'); normal.className = 'card normal';
+  normal.innerHTML = `<div class="lab">A normal app would accept</div>${show(res, res.normal_value, res.normal_pretty, [])}`;
+  const accept = res.decision === 'ACCEPT';
+  const guard = document.createElement('div'); guard.className = 'card ' + (accept ? 'ok' : 'ask');
+  guard.innerHTML = accept
+    ? `<div class="lab">SankhyaGuard</div><div class="gz">${gauge(res)}<div><h3>Accepted</h3><div style="color:#bff7de;font-size:14px">All readings agree.</div></div></div>`
+    : `<div class="lab">SankhyaGuard</div><div class="gz">${gauge(res)}<div><h3>Needs confirmation</h3><ul>${res.reasons.map(r => `<li>${esc(r)}</li>`).join('') || '<li>Could not understand the number.</li>'}</ul></div></div>`;
+  vd.append(normal, guard); await sleep(80); normal.classList.add('in'); await sleep(250); guard.classList.add('in');
+  if(res.notes && res.notes.length) $('#action').insertAdjacentHTML('beforeend', `<div class="note">${esc(res.notes.join(' '))}</div>`);
+  if(accept){ await finalise(res, res.value, res.value_pretty, replay); }
+}
+
+function finalise(res, value, pretty, replay, source = 'accepted'){
+  const label = replay ? 'Pilot result replay' : source === 'user' ? 'You confirmed this number' : source === 'correction' ? 'Your correction' : 'Guard accepted';
+  setState('ok', replay ? 'Replay complete' : source === 'accepted' ? 'Guard accepted' : 'Confirmed', replay ? 'Saved clean-pilot result; not a new model run.' : 'Use this result only after your own confirmation when needed.');
+  const html = `<div class="final"><div class="lab">${label}</div><div class="big">${show(res, value, pretty, [])}</div>
+    <div class="row" style="justify-content:center;margin-top:14px">
+      <button class="btn" id="copyBtn">Copy</button>${replay ? '' : '<button class="btn primary" id="againBtn">Say another</button>'}</div></div>`;
+  const act = $('#action'); act.insertAdjacentHTML('beforeend', html);
+  $('#copyBtn').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(value).catch(() => {}); toast('Copied.'); };
+  const ab = $('#againBtn'); if(ab) ab.onclick = () => {
+    $('#results').innerHTML = '<div class="empty" id="empty"><h2>How it works</h2>Choose Live to record, Demo Audios to preview a bundled clip, or Replay to inspect saved clean-pilot results. Live processing requires the consent checkbox.</div>';
+    setState('idle', 'Ready', 'Tap the orb and say a number.');
+  };
+  if(replay && res.truth){
+    act.insertAdjacentHTML('beforeend', `<div class="reveal"><button class="btn" id="revealBtn">Reveal what was actually said</button><span id="revealOut"></span></div>`);
+    $('#revealBtn').onclick = () => {
+      const right = res.normal_value === res.truth;
+      $('#revealOut').innerHTML = ` &nbsp; Actually said: <b>${esc(res.truth_pretty)}</b> · a normal app was <b style="color:${right ? 'var(--green)' : 'var(--red)'}">${right ? 'right' : 'WRONG'}</b>`;
+    };
+  }
+}
+
+async function confirmFlow(res, {replay = false} = {}){
+  S.resolved = false;
+  const act = $('#action');
+  const cs = res.candidates;
+  act.insertAdjacentHTML('beforeend', `<div class="ql">Which one is right?</div>
+    <div class="cands">${cs.map((c, i) => `<button class="cand" data-i="${i}"><div class="n">Say "${i + 1}"</div>${show(res, c.value, c.pretty, res.positions)}</button>`).join('')}</div>
+    <div class="row"><button class="btn" id="noneBtn">Enter the correct number</button></div>
+    <form id="correctionForm" class="hide" style="margin-top:12px">
+      <label class="ql" for="correctionValue">Your correction (validated locally, not independently verified)</label>
+      <input id="correctionValue" type="text" inputmode="decimal" autocomplete="off" maxlength="64" required>
+      <div class="row"><button class="btn primary" type="submit">Use my correction</button></div>
+    </form>`);
+  const pick = i => { if(S.resolved) return; S.resolved = true; if(S.stopRec) S.stopRec(); finalisePick(res, cs[i], replay, 'user'); };
+  act.querySelectorAll('.cand').forEach(b => b.onclick = () => pick(+b.dataset.i));
+  $('#noneBtn').onclick = () => {
+    if(replay){ setState('ask', 'Pilot result needs confirmation', 'No new audio is sent in Replay mode. Select Live or Demo Audios if you want to check a number.'); return; }
+    if(S.stopRec) S.stopRec();
+    $('#correctionForm').classList.remove('hide');
+    $('#correctionValue').focus();
+    setState('ask', 'Enter your correction', 'The existing parser checks format only; it cannot verify what you said.');
+  };
+  $('#correctionForm').onsubmit = async event => {
+    event.preventDefault();
+    if(S.resolved) return;
+    try{
+      const fd = new FormData();
+      fd.append('kind', res.kind); fd.append('expected_len', KINDS[S.kind].len); fd.append('value', $('#correctionValue').value);
+      const corrected = await postForm('/api/correction', fd);
+      S.resolved = true;
+      finalise(res, corrected.value, corrected.pretty, false, 'correction');
+    }catch(error){ toast(error.message); }
+  };
+  setState('ask', 'I need to double-check', 'Preparing a spoken confirmation…');
+  try{
+    setState('speaking', 'Reading it back on this device…', 'Speech playback is local; it does not call Timbre or use API credits.');
+    await speak(res.readback_text, res.lang);
+    if(S.resolved) return;
+  }catch(e){ toast('Spoken confirmation unavailable: ' + e.message); }
+  if(S.resolved) return;
+  if(replay || cs.length === 0){
+    setState('ask', cs.length ? 'Tap the right number' : 'Please say it again', cs.length ? 'In Live mode you would answer by voice.' : 'Tap the orb.');
+    return;
+  }
+  if(!$('#liveConsent').checked){
+    setState('ask', 'More consent is needed', 'Tap a candidate or re-enable the credit-consent checkbox before answering by voice.');
+    return;
+  }
+  setState('listening', cs.length > 1 ? 'Say "one" or "two"' : 'Say "yes" or "no"', 'Or tap a button.');
+  setMic(true);
+  const blob = await recordOnce({maxMs: 9000, silenceMs: 1100, noSpeechMs: 7000});
+  setMic(false);
+  if(S.resolved) return;
+  if(!$('#liveConsent').checked){
+    setState('ask', 'No voice answer was sent', 'Re-enable consent to answer by voice, or tap a candidate.');
+    return;
+  }
+  setState('thinking', 'Understanding your answer…', '');
+  const fd = new FormData(); fd.append('audio', blob, 'reply.webm'); fd.append('lang', res.lang); fd.append('kind', res.kind); fd.append('expected_len', 0); fd.append('live_consent', 'true');
+  const rep = await postForm('/api/reply', fd);
+  meter(rep.calls, rep.max_calls);
+  if(S.resolved) return;
+  const intent = rep.intent;
+  if(intent === '1' || intent === '2'){ const i = +intent - 1; if(cs[i]){ S.resolved = true; finalisePick(res, cs[i], false, 'user'); return; } }
+  if(intent === 'yes' && cs.length === 1){ S.resolved = true; finalisePick(res, cs[0], false, 'user'); return; }
+  if(intent === 'no'){ S.resolved = true; setState('idle', 'Okay, let us try again', 'Tap the orb and say it again.'); return; }
+  setState('ask', 'I did not catch that', `I heard: "${rep.text || '…'}". Tap a number instead.`);
+}
+function finalisePick(res, cand, replay, source = 'user'){
+  document.querySelectorAll('.cand,#noneBtn').forEach(b => b.disabled = true);
+  finalise(res, cand.value, cand.pretty, replay, source);
+}
+
+/* ---------------------------------------------------------------- flows */
+async function checkAudioBlob(blob, lang, kind, expectedLen, fileName){
+  if(!$('#liveConsent').checked) throw new Error('Consent was turned off; no audio was sent to Prisma.');
+  setState('thinking', 'Checking with Prisma v2.5 and v3.0…', 'Two speech models, then the local parser and Guard.');
+  const fd = new FormData();
+  fd.append('audio', blob, fileName); fd.append('lang', lang); fd.append('kind', kind); fd.append('expected_len', expectedLen || 0); fd.append('live_consent', 'true');
+  const res = await postForm('/api/check', fd);
+  meter(res.calls, res.max_calls);
+  await showResult(res);
+  if(res.decision === 'CONFIRM') await confirmFlow(res);
+}
+async function liveFlow(){
+  if(S.busy){ if(S.stopRec) S.stopRec(); return; }
+  if(!$('#liveConsent').checked){ toast('Please read and check the credit-consent box before recording.'); return; }
+  S.busy = true;
+  try{
+    const K = KINDS[S.kind];
+    $('#results').innerHTML = '<div class="empty"><h2>Listening…</h2>Speak clearly and pause when you finish.</div>';
+    setState('listening', 'Listening…', 'It stops by itself when you pause. Tap again to stop now.');
+    setMic(true);
+    const blob = await recordOnce({maxMs: 15000});
+    setMic(false);
+    await checkAudioBlob(blob, S.lang, K.kind, K.len, 'rec.webm');
+  }catch(e){
+    setMic(false); setState('error', 'Something went wrong', e.message || String(e)); toast(e.message || String(e));
+  }finally{ S.busy = false; setMic(false); }
+}
+async function demoFlow(){
+  if(S.busy) return;
+  if(!$('#liveConsent').checked){ toast('Please read and check the credit-consent box before processing a demo clip.'); return; }
+  const selected = S.selectedDemo;
+  if(!selected){ toast('Select an available demo clip first.'); return; }
+  S.busy = true;
+  $('#analyzeDemo').disabled = true;
+  try{
+    const response = await api(`/api/demo/clip/${encodeURIComponent(selected.id)}`);
+    const blob = await response.blob();
+    const expected = selected.kind === 'digits' ? selected.expected_len : 0;
+    await checkAudioBlob(blob, selected.language, selected.kind, expected, `${selected.id}.wav`);
+  }catch(error){ setState('error', 'Something went wrong', error.message || String(error)); toast(error.message || String(error)); }
+  finally{ S.busy = false; $('#analyzeDemo').disabled = !$('#liveConsent').checked; }
+}
+async function replayFlow(){
+  if(S.busy) return;
+  S.busy = true;
+  try{
+    const selected = $('#caseSel').value;
+    if(!selected){ toast('There are no complete saved pilot cases to replay.'); return; }
+    const [cond, id] = selected.split('|');
+    $('#results').innerHTML = '<div class="empty"><h2>Replaying…</h2>A clip I recorded, and what Prisma returned for it.</div>';
+    const info = await (await api(`/api/replay/${cond}/${id}`)).json();
+    setState('listening', 'Playing the recorded clip…', `${id} · ${cond}`);
+    try{ await playUrl(`/api/clip/${cond}/${id}`); }catch(e){}
+    setState('thinking', 'Checking with Prisma…', 'Using saved results (no credits).');
+    await sleep(900);
+    await showResult(info, {replay: true});
+    if(info.decision === 'CONFIRM') await confirmFlow(info, {replay: true});
+  }catch(e){ setState('error', 'Something went wrong', e.message || String(e)); toast(e.message || String(e)); }
+  finally{ S.busy = false; }
+}
+
+/* ---------------------------------------------------------------- wiring */
+function refreshHint(){ $('#hint').textContent = HINTS[S.lang][S.kind]; }
+document.querySelectorAll('#langPills button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#langPills button').forEach(x => x.classList.remove('on')); b.classList.add('on'); S.lang = b.dataset.lang; refreshHint();
+});
+document.querySelectorAll('#kindPills button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#kindPills button').forEach(x => x.classList.remove('on')); b.classList.add('on'); S.kind = b.dataset.kind; refreshHint();
+});
+document.querySelectorAll('#modeSeg button').forEach(b => b.onclick = async () => {
+  if(S.busy) return;
+  document.querySelectorAll('#modeSeg button').forEach(x => x.classList.remove('on')); b.classList.add('on');
+  S.mode = b.dataset.mode; document.body.dataset.mode = S.mode;
+  $('#liveControls').classList.toggle('hide', S.mode !== 'live');
+  $('#demoControls').classList.toggle('hide', S.mode !== 'demo');
+  $('#replayControls').classList.toggle('hide', S.mode !== 'replay');
+  $('#consentBox').classList.toggle('hide', S.mode === 'replay');
+  setState('idle', 'Ready', S.mode === 'live' ? 'Tap the orb and say a number.' : S.mode === 'demo' ? 'Preview a bundled clip, then explicitly choose to process it.' : 'Pick a saved pilot case and press play.');
+  if(S.mode === 'replay') loadCases();
+  if(S.mode === 'demo') loadDemoCases();
+});
+
+document.body.dataset.mode = 'live';
+function tapOrb(){ if(S.mode !== 'live') return; audioCtx(); liveFlow(); }
+cv.setAttribute('role', 'button'); cv.setAttribute('tabindex', '0'); cv.setAttribute('aria-label', 'Tap the orb to speak a number');
+const inOrb = e => { const r = cv.getBoundingClientRect(); return Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) <= r.width * 0.30; };
+cv.addEventListener('click', e => { if(inOrb(e)) tapOrb(); });
+cv.addEventListener('mousemove', e => { S.hover = inOrb(e); cv.style.cursor = (S.mode === 'live' && S.hover) ? 'pointer' : 'default'; });
+cv.addEventListener('mouseleave', () => { S.hover = false; });
+cv.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); tapOrb(); } });
+
+$('#analyzeDemo').onclick = demoFlow;
+$('#playCase').onclick = replayFlow;
+$('#liveConsent').onchange = () => {
+  $('#analyzeDemo').disabled = !$('#liveConsent').checked || !S.selectedDemo;
+};
+async function loadCases(){
+  try{
+    const cases = await (await api('/api/replay/cases')).json();
+    $('#caseSel').innerHTML = cases.length ? cases.map(c => `<option value="${esc(c.condition)}|${esc(c.id)}">${esc(c.id)} · ${esc(c.condition)} · ${esc(c.kind)}</option>`).join('')
+      : '<option value="">No complete saved pilot results</option>';
+  }catch(e){ toast(e.message); }
+}
+async function loadDemoCases(){
+  try{
+    S.demos = await (await api('/api/demo/cases')).json();
+    const labels = {en:'ENGLISH',kn:'ಕನ್ನಡ',hi:'हिन्दी'};
+    const grouped = {en:[],kn:[],hi:[]};
+    S.demos.forEach(item => grouped[item.language].push(item));
+    $('#demoLists').innerHTML = ['en','kn','hi'].map(lang =>
+      `<div class="demoColumn"><h4>${labels[lang]} · ${grouped[lang].length}</h4>${grouped[lang].map(item =>
+        `<button class="demoAudio" type="button" data-id="${esc(item.id)}" title="${esc(item.kind)}${item.expected_len ? ` · ${item.expected_len} digits` : ''}">${esc(item.id)}</button>`
+      ).join('') || '<div class="hint">No clips</div>'}</div>`
+    ).join('');
+    $('#demoMeta').textContent = S.demos.length
+      ? `${S.demos.length} manifest-listed clips with matching local WAV files. Previewing a clip is free.`
+      : 'No demo files are currently available; no clips were fabricated.';
+    $('#demoLists').querySelectorAll('.demoAudio').forEach(button => button.onclick = () => {
+      S.selectedDemo = S.demos.find(item => item.id === button.dataset.id);
+      $('#demoLists').querySelectorAll('.demoAudio').forEach(other => other.classList.toggle('active', other === button));
+      const audio = $('#demoPreview');
+      audio.pause();
+      audio.src = `/api/demo/clip/${encodeURIComponent(S.selectedDemo.id)}`;
+      audio.classList.remove('hide');
+      $('#selectedDemoMeta').textContent = `${labels[S.selectedDemo.language]} · ${S.selectedDemo.id} · ${S.selectedDemo.kind}${S.selectedDemo.expected_len ? ` · ${S.selectedDemo.expected_len} digits` : ''}. Preview is local; processing sends this clip to Prisma.`;
+      $('#analyzeDemo').disabled = !$('#liveConsent').checked;
+    });
+  }catch(e){ $('#demoMeta').textContent = 'Could not load the demo audio list.'; toast(e.message); }
+}
+(async function init(){
+  refreshHint();
+  try{ const st = await (await api('/api/status')).json(); meter(st.calls, st.max_calls); }catch(e){ toast(e.message); }
+})();
+
+(function intro(){
+  const el = document.getElementById('intro'); if(!el) return;
+  const enter = () => document.body.classList.add('enter');
+  if(/[?&]nointro/.test(location.search) || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)){ el.remove(); enter(); return; }
+  document.getElementById('iname').innerHTML = [...'SankhyaGuard'].map((ch, k) => `<span style="--k:${k}">${ch}</span>`).join('');
+  const cv2 = document.getElementById('introCv'), x = cv2.getContext('2d'), bar = document.getElementById('iprog');
+  let W = 0, H = 0;
+  const fit = () => { const d = window.devicePixelRatio || 1; W = cv2.width = innerWidth * d; H = cv2.height = innerHeight * d; };
+  fit(); window.addEventListener('resize', fit);
+  const P = Array.from({length: 320}, () => ({a: Math.random() * 6.2832, r: (0.5 + Math.random() * 0.9) * Math.max(W, H) * 0.55, k: Math.random(), w: (Math.random() < .5 ? -1 : 1) * (1.2 + Math.random() * 2.4), s: 0.8 + Math.random() * 2.2}));
+  const T0 = performance.now(); let done = false;
+  const onKey = e => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' '){ e.preventDefault(); finish(); } };
+  function finish(){ if(done) return; done = true; window.removeEventListener('keydown', onKey, true); el.classList.add('out'); enter(); setTimeout(() => el.remove(), 1000); }
+  el.addEventListener('click', finish); window.addEventListener('keydown', onKey, true);
+  function frame(now){
+    if(done) return;
+    const t = (now - T0) / 1000, cx = W / 2, cy = H * 0.40, u = Math.min(W, H) / 900;
+    const pr = Math.min(t / 1.8, 1), e = 1 - Math.pow(1 - pr, 3);
+    x.globalCompositeOperation = 'source-over'; x.fillStyle = 'rgba(4,5,12,0.3)'; x.fillRect(0, 0, W, H);
+    const pulse = t > 1.8 ? 9 * Math.sin((t - 1.8) * 7) * Math.exp(-(t - 1.8) * 1.6) : 0;
+    const R = (16 + 118 * e + pulse) * u;
+    x.globalCompositeOperation = 'lighter';
+    let g = x.createRadialGradient(cx, cy, 0, cx, cy, R * 3.4);
+    g.addColorStop(0, 'rgba(110,190,255,.24)'); g.addColorStop(.4, 'rgba(124,92,255,.08)'); g.addColorStop(1, 'rgba(124,92,255,0)');
+    x.fillStyle = g; x.beginPath(); x.arc(cx, cy, R * 3.4, 0, 7); x.fill();
+    x.globalCompositeOperation = 'source-over';
+    g = x.createRadialGradient(cx - R * .32, cy - R * .38, R * .04, cx, cy, R);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(.22, '#a6f6ff'); g.addColorStop(.62, '#6f62ff'); g.addColorStop(1, '#33278f');
+    x.fillStyle = g; x.beginPath(); x.arc(cx, cy, R, 0, 7); x.fill();
+    x.globalCompositeOperation = 'lighter';
+    for(const q of P){
+      const swirl = q.w * (1 - e) * 2.6 + (t > 1.8 ? q.w * 0.22 * (t - 1.8) : 0);
+      const rad = q.r * (1 - e) + R * (1.2 + q.k * 1.3) * e, a = q.a + swirl;
+      const squash = t > 1.8 ? 0.45 + 0.35 * q.k : 1;
+      x.fillStyle = `rgba(${q.k < .5 ? '62,230,255' : '170,140,255'},${0.35 + 0.55 * q.k})`;
+      x.beginPath(); x.arc(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad * squash, q.s * u * 1.1, 0, 7); x.fill();
+    }
+    if(t > 1.75){
+      const s = t - 1.75;
+      for(let k = 0; k < 2; k++){
+        const sk = s - k * 0.25; if(sk <= 0) continue;
+        x.strokeStyle = `rgba(143,243,255,${Math.max(0, 0.6 - sk * 0.65)})`; x.lineWidth = Math.max(0.5, 7 - sk * 5) * u;
+        x.beginPath(); x.arc(cx, cy, R + sk * 560 * u, 0, 7); x.stroke();
+      }
+      if(s < 0.4){ x.fillStyle = `rgba(255,255,255,${(1 - s / 0.4) * 0.3})`; x.fillRect(0, 0, W, H); }
+    }
+    bar.style.transform = `scaleX(${Math.min(t / 4.2, 1)})`;
+    if(t > 4.3){ finish(); return; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  setTimeout(finish, 8000);
+})();
+window.SG = {setState, S};
+</script>
+</body>
+</html>
